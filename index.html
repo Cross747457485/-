@@ -3,257 +3,326 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔮 Рулетка Судьбы</title>
+    <title>Колесо Фортуны — Онлайн Выбор</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0f0c1b;
-            background: linear-gradient(to bottom, #0f0c1b, #241442);
-            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
             box-sizing: border-box;
         }
 
         h1 {
-            margin-bottom: 5px;
-            color: #ff007f;
-            text-shadow: 0 0 15px rgba(255, 0, 127, 0.6);
-            font-size: 2.5rem;
-            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #222;
         }
 
-        .subtitle {
-            margin-bottom: 25px;
-            color: #b388ff;
-            text-align: center;
-            font-size: 1.1rem;
+        /* Главный контейнер из двух колонок как на Piliapp */
+        .main-layout {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 40px;
+            max-width: 900px;
+            width: 100%;
+            margin-top: 10px;
         }
 
-        /* Блок ввода */
-        .input-block {
-            margin-bottom: 30px;
+        /* Левая колонка: Колесо */
+        .left-panel {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .input-block label {
-            margin-bottom: 8px;
-            color: #e0aaff;
-            font-size: 1rem;
-        }
-
-        .user-input {
-            width: 100%;
-            padding: 12px 20px;
-            border: 2px solid #7b2cbf;
-            border-radius: 25px;
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            font-size: 16px;
-            outline: none;
-            text-align: center;
-            transition: all 0.3s;
-            box-sizing: border-box;
-        }
-
-        .user-input:focus {
-            border-color: #ff007f;
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Контейнер рулетки */
-        .roulette-container {
+            flex: 1;
             position: relative;
-            width: 320px;
-            height: 320px;
-            margin-bottom: 35px;
         }
 
-        /* Стрелочка */
-        .pointer {
+        .roulette-wrapper {
+            position: relative;
+            width: 360px;
+            height: 360px;
+        }
+
+        /* Красный треугольник-указатель справа */
+        .pointer-arrow {
             position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
             width: 0;
             height: 0;
-            border-left: 18px solid transparent;
-            border-right: 18px solid transparent;
-            border-top: 28px solid #ff007f;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-right: 25px solid #d9534f;
             z-index: 10;
-            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.7));
         }
 
-        /* Колесо */
-        .wheel {
+        .wheel-canvas {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: conic-gradient(
-                #ff0055 0deg 45deg, 
-                #00bbf9 45deg 90deg, 
-                #00f5d4 90deg 135deg, 
-                #9b5de5 135deg 180deg, 
-                #f15bb5 180deg 225deg,
-                #fee440 225deg 270deg,
-                #3a86c8 270deg 315deg,
-                #ff9f1c 315deg 360deg
-            );
-            border: 6px solid #fff;
-            box-shadow: 0 0 25px rgba(123, 44, 191, 0.5), inset 0 0 20px rgba(0,0,0,0.6);
-            transition: transform 4.5s cubic-bezier(0.1, 0.8, 0.1, 1);
-        }
-
-        /* Кнопка Старт */
-        .spin-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 75px;
-            height: 75px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 5s cubic-bezier(0.1, 0.8, 0.1, 1);
             background: #fff;
-            color: #0f0c1b;
-            border-radius: 50%;
-            border: 4px solid #7b2cbf;
+        }
+
+        /* Кнопки под колесом */
+        .controls {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            font-size: 16px;
             font-weight: bold;
-            font-size: 14px;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-            z-index: 5;
-            transition: transform 0.1s, background-color 0.2s;
+            transition: background 0.2s;
         }
 
-        .spin-btn:hover {
-            background-color: #f0e6ff;
+        .btn-start {
+            background-color: #0275d8;
+            color: white;
         }
 
-        .spin-btn:disabled {
-            background-color: #444;
-            color: #888;
-            border-color: #222;
-            cursor: not-allowed;
+        .btn-start:hover { background-color: #01549b; }
+        .btn-start:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        /* Правая колонка: Поле ввода текста */
+        .right-panel {
+            width: 280px;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Окно Судьбы */
-        .result-box {
-            font-size: 20px;
-            font-weight: 500;
-            min-height: 50px;
-            color: #fff;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.07);
-            padding: 15px 25px;
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.15);
-            max-width: 450px;
-            width: 100%;
-            box-sizing: border-box;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-
-        .highlight {
-            color: #fee440;
+        .right-panel label {
+            font-size: 14px;
             font-weight: bold;
-            text-shadow: 0 0 8px rgba(254, 228, 64, 0.4);
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .text-area-input {
+            width: 100%;
+            height: 300px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 15px;
+            line-height: 1.5;
+            resize: none;
+            box-sizing: border-box;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .text-area-input:focus {
+            border-color: #0275d8;
+            box-shadow: 0 0 5px rgba(2, 117, 216, 0.3);
+        }
+
+        /* Всплывающее окно с победителем */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal-content h2 {
+            margin: 0 0 15px 0;
+            color: #222;
+            font-size: 20px;
+        }
+
+        .winner-text {
+            font-size: 26px;
+            font-weight: bold;
+            color: #d9534f;
+            margin-bottom: 25px;
+            word-wrap: break-word;
+        }
+
+        .close-modal-btn {
+            background: #222;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Адаптивность для мобилок */
+        @media (max-width: 650px) {
+            .main-layout { flex-direction: column; align-items: center; }
+            .right-panel { width: 100%; max-width: 360px; }
         }
     </style>
 </head>
 <body>
 
-    <h1>🔮 РУЛЕТКА СУДЬБЫ</h1>
-    <p class="subtitle">Узнай, что предначертано тебе или твоему вопросу</p>
+    <h1> Gauges Колесо фортуны</h1>
 
-    <!-- Поле ввода для пользователя -->
-    <div class="input-block">
-        <label for="username">Введи имя или то то тебя волнует:</label>
-        <input type="text" id="username" class="user-input" placeholder="Например: Влад или Пойти ли гулять?..." autocomplete="off">
+    <div class="main-layout">
+        <!-- ЛЕВАЯ ЧАСТЬ: РУЛЕТКА -->
+        <div class="left-panel">
+            <div class="roulette-wrapper">
+                <div class="pointer-arrow"></div>
+                <canvas id="wheelCanvas" class="wheel-canvas" width="500" height="500"></canvas>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-start" id="startBtn">Старт</button>
+            </div>
+        </div>
+
+        <!-- ПРАВАЯ ЧАСТЬ: СПИСОК ВАРЯНТОВ -->
+        <div class="right-panel">
+            <label for="itemsInput">Введите элементы (каждый с новой строки):</label>
+            <textarea id="itemsInput" class="text-area-input">Да
+Нет
+Возможно
+Попробуй позже
+Успех
+Секретный приз</textarea>
+        </div>
     </div>
 
-    <!-- Рулетка -->
-    <div class="roulette-container">
-        <div class="pointer"></div>
-        <div class="wheel" id="wheel"></div>
-        <button class="spin-btn" id="spinBtn">УЗНАТЬ</button>
+    <!-- ОКНО РЕЗУЛЬТАТА -->
+    <div class="modal" id="winnerModal">
+        <div class="modal-content">
+            <h2>🎉 Результат выбора:</h2>
+            <div class="winner-text" id="winnerText">Имя</div>
+            <button class="close-modal-btn" id="closeModalBtn">Закрыть</button>
+        </div>
     </div>
-
-    <!-- Результат -->
-    <div class="result-box" id="result">Судьба ждет твоего слова... Напиши что-нибудь выше и нажми «УЗНАТЬ»!</div>
 
     <script>
-        const wheel = document.getElementById('wheel');
-        const spinBtn = document.getElementById('spinBtn');
-        const result = document.getElementById('result');
-        const userInput = document.getElementById('username');
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const itemsInput = document.getElementById('itemsInput');
+        const startBtn = document.getElementById('startBtn');
+        const winnerModal = document.getElementById('winnerModal');
+        const winnerText = document.getElementById('winnerText');
+        const closeModalBtn = document.getElementById('closeModalBtn');
 
-        // Варианты предсказаний судьбы (всего 8 секторов, по 45 градусов каждый)
-        // Колесо разделено на 8 цветных частей
-        const predictions = [
-            "ждёт невероятный успех в ближайшие 24 часа! 🚀",
-            "получит неожиданный, но очень приятный сюрприз. 🎁",
-            "столкнется с важным выбором. Доверься интуиции! 🧠",
-            "— сегодня точно твой день, всё задуманное сбудется! ✨",
-            "лучше взять паузу и хорошенько отдохнуть. 🛋️",
-            "ждёт крутое приключение или новые знакомства! 🌍",
-            "совет: не бойся рисковать, удача на твоей стороне! 🎲",
-            "впереди большая удача, о которой ты даже не думаешь! 🌟"
-        ];
-
+        let items = [];
         let currentRotation = 0;
         let isSpinning = false;
 
-        spinBtn.addEventListener('click', () => {
-            // Берем то, что ввел человек, и убираем лишние пробелы
-            const textValue = userInput.value.trim();
+        const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
 
-            // Если человек ничего не написал, рулетка ругается и не крутится
-            if (textValue === "") {
-                result.innerHTML = "<span style='color: #ff4b5c;'>⚠️ Сначала напиши слово или имя в поле ввода!</span>";
-                userInput.focus();
+        function drawWheel() {
+            items = itemsInput.value.split('\n').map(item => item.trim()).filter(item => item !== "");
+            const numSectors = items.length;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (numSectors === 0) {
+                ctx.beginPath();
+                ctx.arc(250, 250, 240, 0, 2 * Math.PI);
+                ctx.fillStyle = '#fff';
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#ccc';
+                ctx.stroke();
                 return;
             }
 
-            if (isSpinning) return;
-            
-            isSpinning = true;
-            spinBtn.disabled = true; // Отключаем кнопку на время вращения
-            result.innerText = "Судьба делает свой выбор... 🌀";
+            const arcSize = (2 * Math.PI) / numSectors;
 
-            // Случайный угол поворота
+            for (let i = 0; i < numSectors; i++) {
+                const angle = i * arcSize;
+                
+                ctx.beginPath();
+                ctx.moveTo(250, 250);
+                ctx.arc(250, 250, 240, angle, angle + arcSize);
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.fill();
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = '#ffffff';
+                ctx.stroke();
+
+                ctx.save();
+                ctx.translate(250, 250);
+                ctx.rotate(angle + arcSize / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 16px sans-serif";
+                
+                let text = items[i];
+                if(text.length > 15) text = text.substring(0, 13) + '...';
+                
+                ctx.fillText(text, 220, 5);
+                ctx.restore();
+            }
+
+            ctx.beginPath();
+            ctx.arc(250, 250, 15, 0, 2 * Math.PI);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#333';
+            ctx.stroke();
+        }
+
+        itemsInput.addEventListener('input', drawWheel);
+
+        startBtn.addEventListener('click', () => {
+            if (items.length === 0) return;
+            if (isSpinning) return;
+
+            isSpinning = true;
+            startBtn.disabled = true;
+
             const randomDegrees = Math.floor(Math.random() * 360);
-            // Делаем от 6 до 10 полных оборотов для эпичности
             const totalSpins = (6 + Math.floor(Math.random() * 5)) * 360;
             
             currentRotation += totalSpins + randomDegrees;
-            wheel.style.transform = `rotate(${currentRotation}deg)`;
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
 
-            // Ждем 4.5 секунды окончания анимации
             setTimeout(() => {
                 isSpinning = false;
-                spinBtn.disabled = false;
+                startBtn.disabled = false;
 
-                // Высчитываем сектор, который остановился ровно под стрелкой (0 градусов)
                 const actualDegrees = currentRotation % 360;
-                
-                // Колесо разделено на 8 секторов (360 / 8 = 45 градусов на сектор)
-                const sectorAngle = 45;
+                const sectorAngle = 360 / items.length;
                 const prizeIndex = Math.floor(((360 - actualDegrees) % 360) / sectorAngle);
-                
-                // Красиво выводим результат, подставляя введенный текст
-                result.innerHTML = `🔮 <span class="highlight">«${textValue}»</span> — ${predictions[prizeIndex]}`;
-            }, 4500);
-        });
-    </script>
 
+                winnerText.innerText = items[prizeIndex];
+                winnerModal.style.display = 'flex';
+            }, 5000);
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            winnerModal.style.display = 'none';
+        });
+
+        drawWheel();
+    </script>
 </body>
 </html>
