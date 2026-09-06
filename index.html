@@ -1,308 +1,419 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔮 Рулетка Судьбы</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0f0c1b;
-            background: linear-gradient(to bottom, #0f0c1b, #241442);
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔮  Рулетка Судьбы</title>
 
-        h1 {
-            margin-bottom: 5px;
-            color: #ff007f;
-            text-shadow: 0 0 15px rgba(255, 0, 127, 0.6);
-            font-size: 2.5rem;
-            text-align: center;
-        }
+<style>
+* {
+    box-sizing: border-box;
+}
 
-        .subtitle {
-            margin-bottom: 25px;
-            color: #b388ff;
-            text-align: center;
-            font-size: 1.1rem;
-        }
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 20px;
+    background: linear-gradient(to bottom, #0f0c1b, #241442);
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
-        /* Контейнер рулетки */
-        .roulette-container {
-            position: relative;
-            width: 320px;
-            height: 320px;
-            margin-bottom: 20px;
-        }
+h1 {
+    margin: 0 0 5px;
+    color: #ff007f;
+    font-size: 36px;
+    text-align: center;
+    text-shadow: 0 0 15px rgba(255,0,127,.7);
+}
 
-        /* Розовая стрелочка указателя сверху */
-        .pointer {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 18px solid transparent;
-            border-right: 18px solid transparent;
-            border-top: 28px solid #ff007f;
-            z-index: 10;
-            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.7));
-        }
+.subtitle {
+    color: #b388ff;
+    margin: 0 0 25px;
+    text-align: center;
+}
 
-        /* КОЛЕСО */
-        .wheel {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 6px solid #fff;
-            box-shadow: 0 0 25px rgba(123, 44, 191, 0.5), inset 0 0 20px rgba(0,0,0,0.6);
-            background: conic-gradient(
-                #ff0055 0deg 45deg, 
-                #00bbf9 45deg 90deg, 
-                #00f5d4 90deg 135deg, 
-                #9b5de5 135deg 180deg, 
-                #f15bb5 180deg 225deg,
-                #fee440 225deg 270deg,
-                #3a86c8 270deg 315deg,
-                #ff9f1c 315deg 360deg
-            );
-            transition: transform 4.5s cubic-bezier(0.1, 0.8, 0.1, 1);
-        }
+.roulette-container {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    margin-bottom: 20px;
+}
 
-        /* Кнопка Старт в центре */
-        .spin-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 75px;
-            height: 75px;
-            background: #fff;
-            color: #0f0c1b;
-            border-radius: 50%;
-            border: 4px solid #7b2cbf;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-            z-index: 5;
-            transition: transform 0.1s;
-        }
+.pointer {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-top: 30px solid #ff007f;
+    z-index: 20;
+    filter: drop-shadow(0 4px 5px black);
+}
 
-        .spin-btn:active {
-            transform: translate(-50%, -50%) scale(0.9);
-        }
+.wheel {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    border: 6px solid white;
+    overflow: hidden;
+    box-shadow:
+        0 0 25px rgba(123,44,191,.7),
+        inset 0 0 20px rgba(0,0,0,.5);
+    transition: transform 4.5s cubic-bezier(.1,.8,.1,1);
+}
 
-        /* Неоновое табло для вывода текущего результата */
-        .status-display {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #fee440;
-            text-shadow: 0 0 10px rgba(254, 228, 64, 0.6);
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px 25px;
-            border-radius: 20px;
-            border: 1px solid rgba(123, 44, 191, 0.3);
-            margin-bottom: 25px;
-            min-width: 200px;
-            text-align: center;
-        }
+.wheel-text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 135px;
+    height: 30px;
+    margin-top: -15px;
+    transform-origin: 0 50%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    text-shadow: 2px 2px 4px black;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+}
 
-        /* Блок ввода вариантов под колесом */
-        .input-block {
-            margin-bottom: 25px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 400px;
-        }
+.spin-btn {
+    position: absolute;
+    z-index: 30;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    border: 4px solid #7b2cbf;
+    background: white;
+    color: #0f0c1b;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,.5);
+}
 
-        .input-block label {
-            margin-bottom: 10px;
-            color: #e0aaff;
-            font-size: 1rem;
-            text-align: center;
-        }
+.spin-btn:active {
+    transform: translate(-50%, -50%) scale(.9);
+}
 
-        /* Поле ввода */
-        .text-area-input {
-            width: 100%;
-            height: 100px;
-            padding: 12px 20px;
-            border: 2px solid #7b2cbf;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            font-size: 16px;
-            outline: none;
-            text-align: center;
-            transition: all 0.3s;
-            box-sizing: border-box;
-            resize: none;
-            font-family: inherit;
-        }
+.status-display {
+    min-width: 220px;
+    margin-bottom: 25px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-align: center;
+    font-weight: bold;
+    color: #fee440;
+    background: rgba(255,255,255,.05);
+    text-shadow: 0 0 10px rgba(254,228,64,.6);
+}
 
-        .text-area-input:focus {
-            border-color: #ff007f;
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
-        }
+.input-block {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-        /* Окно результатов */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 12, 27, 0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            backdrop-filter: blur(5px);
-        }
+.input-block label {
+    margin-bottom: 10px;
+    color: #e0aaff;
+}
 
-        .modal-content {
-            background: #1e1233;
-            border: 2px solid #ff007f;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 0 30px rgba(255, 0, 127, 0.4);
-            max-width: 400px;
-            width: 90%;
-        }
+textarea {
+    width: 100%;
+    height: 100px;
+    padding: 12px 20px;
+    border: 2px solid #7b2cbf;
+    border-radius: 15px;
+    outline: none;
+    resize: none;
+    background: rgba(255,255,255,.05);
+    color: white;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
 
-        .modal-content h2 {
-            margin: 0 0 15px 0;
-            color: #b388ff;
-            font-size: 22px;
-        }
+textarea:focus {
+    border-color: #ff007f;
+    box-shadow: 0 0 15px rgba(255,0,127,.4);
+}
 
-        .winner-text {
-            font-size: 28px;
-            font-weight: bold;
-            color: #fee440;
-            text-shadow: 0 0 10px rgba(254, 228, 64, 0.6);
-            margin-bottom: 25px;
-        }
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15,12,27,.8);
+    backdrop-filter: blur(5px);
+}
 
-        .close-modal-btn {
-            background: #ff007f;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            font-weight: bold;
-            border-radius: 25px;
-            cursor: pointer;
-        }
-    </style>
+.modal-content {
+    width: 90%;
+    max-width: 400px;
+    padding: 30px;
+    border: 2px solid #ff007f;
+    border-radius: 20px;
+    background: #1e1233;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(255,0,127,.5);
+}
+
+.modal-content h2 {
+    color: #b388ff;
+}
+
+.winner-text {
+    margin: 20px 0;
+    color: #fee440;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-modal-btn {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 25px;
+    background: #ff007f;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+@media (max-width: 500px) {
+    .roulette-container,
+    .wheel {
+width: 290px;
+        height: 290px;
+    }
+
+    .wheel-text {
+        width: 120px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <h1>🔮 РУЛЕТКА СУДЬБЫ</h1>
-    <p class="subtitle">Введи варианты через Enter и крути!</p>
+<h1>🔮  РУЛЕТКА СУДЬБЫ</h1>
+<p class="subtitle">Введи варианты через Enter и крути!</p>
 
-    <!-- Рулетка -->
-    <div class="roulette-container">
-        <div class="pointer"></div>
-        <div class="wheel" id="wheel"></div>
-        <button class="spin-btn" id="spinBtn">КРУТЬ</button>
-    </div>
+<div class="roulette-container">
+    <div class="pointer"></div>
+    <div class="wheel" id="wheel"></div>
+    <button class="spin-btn" id="spinBtn">КРУТЬ</button>
+</div>
 
-    <!-- Табло статуса -->
-    <div class="status-display" id="statusDisplay">Жду твоих вариантов...</div>
+<div class="status-display" id="statusDisplay">
+    Жду твоих вариантов...
+</div>
 
-    <!-- Блок ввода вариантов -->
-    <div class="input-block">
-        <label for="itemsInput">Варианты (каждый с новой строки):</label>
-        <textarea id="itemsInput" class="text-area-input">Да
+<div class="input-block">
+    <label for="itemsInput">
+        Варианты (каждый с новой строки):
+    </label>
+
+    <textarea id="itemsInput">Да
 Нет
 Возможно
 Успех
 Банкрот
 Секретный приз</textarea>
+</div>
+
+<div class="modal" id="winnerModal">
+    <div class="modal-content">
+        <h2>🔮  Судьба выбрала:</h2>
+
+        <div class="winner-text" id="winnerText"></div>
+
+        <button class="close-modal-btn" id="closeModalBtn">
+            Принять
+        </button>
     </div>
+</div>
 
-    <!-- Окно ответа -->
-    <div class="modal" id="winnerModal">
-        <div class="modal-content">
-            <h2>🔮 Судьба выбрала:</h2>
-            <div class="winner-text" id="winnerText">Вариант</div>
-            <button class="close-modal-btn" id="closeModalBtn">Принять</button>
-        </div>
-    </div>
+<script>
+const wheel = document.getElementById("wheel");
+const spinBtn = document.getElementById("spinBtn");
+const itemsInput = document.getElementById("itemsInput");
+const statusDisplay = document.getElementById("statusDisplay");
+const winnerModal = document.getElementById("winnerModal");
+const winnerText = document.getElementById("winnerText");
+const closeModalBtn = document.getElementById("closeModalBtn");
 
-    <script>
-        const wheel = document.getElementById('wheel');
-        const spinBtn = document.getElementById('spinBtn');
-        const winnerModal = document.getElementById('winnerModal');
-        const winnerText = document.getElementById('winnerText');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const itemsInput = document.getElementById('itemsInput');
-        const statusDisplay = document.getElementById('statusDisplay');
+let rotation = 0;
+let spinning = false;
 
-        let currentRotation = 0;
-        let isSpinning = false;
+const colors = [
+    "#ff0055",
+    "#00bbf9",
+    "#00f5d4",
+    "#9b5de5",
+    "#f15bb5",
+    "#fee440",
+    "#3a86c8",
+    "#ff9f1c",
+    "#8338ec",
+    "#06d6a0",
+    "#ef476f",
+    "#118ab2"
+];
 
-        // Показываем пользователю, сколько вариантов он ввел
-        function updateStatus() {
-            let items = itemsInput.value.split('\n').map(item => item.trim()).filter(item => item !== "");
-            if (items.length === 0) {
-                statusDisplay.innerText = "Поле ввода пусто!";
-            } else {
-                statusDisplay.innerText = `Добавлено вариантов: ${items.length}`;
-            }
-        }
-        itemsInput.addEventListener('input', updateStatus);
-        updateStatus();
+function getItems() {
+    return itemsInput.value
+        .split("\n")
+        .map(x => x.trim())
+        .filter(x => x.length > 0);
+}
 
-        spinBtn.addEventListener('click', () => {
-            let items = itemsInput.value.split('\n').map(item => item.trim()).filter(item => item !== "");
-            
-            if (items.length === 0) {
-                alert("Введите варианты судьбы!");
-                return;
-            }
-            if (isSpinning) return;
+function drawWheel() {
+    const items = getItems();
 
-            isSpinning = true;
-            statusDisplay.innerText = "Колесо крутится... 🌀";
+    wheel.innerHTML = "";
 
-            const randomDegrees = Math.floor(Math.random() * 360);
-            const totalSpins = (6 + Math.floor(Math.random() * 5)) * 360;
-            
-            currentRotation += totalSpins + randomDegrees;
-            wheel.style.transform = `rotate(${currentRotation}deg)`;
+    if (items.length === 0) {
+        wheel.style.background = "#333";
+        statusDisplay.textContent = "Поле ввода пусто!";
+        return;
+    }
 
-            setTimeout(() => {
-                isSpinning = false;
+    const angle = 360 / items.length;
 
-                const actualDegrees = currentRotation % 360;
-                const sectorAngle = 360 / items.length;
-                
-                // Высчитываем выигравший сектор
-                const prizeIndex = Math.floor(((270 - actualDegrees + 360) % 360) / sectorAngle);
+    let gradient = [];
 
-                const finalChoice = items[prizeIndex] || items[0];
-                
-                // Обновляем табло и открываем окно
-                statusDisplay.innerText = `Выпало: ${finalChoice} 🎉`;
-                winnerText.innerText = finalChoice;
-                winnerModal.style.display = 'flex';
-            }, 4500);
-        });
+    for (let i = 0; i < items.length; i++) {
+        const start = i * angle;
+        const end = (i + 1) * angle;
 
-        closeModalBtn.addEventListener('click', () => {
-            winnerModal.style.display = 'none';
-        });
-    </script>
+        gradient.push(
+            `${colors[i % colors.length]} ${start}deg ${end}deg`
+        );
+    }
+
+    wheel.style.background =
+        `conic-gradient(${gradient.join(",")})`;
+
+    items.forEach((item, i) => {
+        const text = document.createElement("div");
+
+        text.className = "wheel-text";
+        text.textContent = item;
+
+        const textAngle = i * angle + angle / 2;
+
+        text.style.transform =
+            `rotate(${textAngle}deg) translateX(8px)`;
+
+        wheel.appendChild(text);
+    });
+
+    statusDisplay.textContent =
+        `Добавлено вариантов: ${items.length}`;
+}
+
+itemsInput.addEventListener("input", drawWheel);
+
+drawWheel();
+
+spinBtn.addEventListener("click", () => {
+    const items = getItems();
+
+    if (items.length === 0) {
+        alert("Введите варианты судьбы!");
+        return;
+    }
+
+    if (spinning) return;
+
+    spinning = true;
+    statusDisplay.textContent = "Колесо крутится... 🌀 ";
+
+    const sectorAngle = 360 / items.length;
+
+    // Выбираем конкретный сектор
+    const winnerIndex =
+        Math.floor(Math.random() * items.length);
+
+    // Центр выбранного сектора
+    const winnerCenter =
+        winnerIndex * sectorAngle + sectorAngle / 2;
+
+    /*
+       Стрелка находится сверху.
+       Поэтому выбранный сектор ставим под неё.
+    */
+    const target =
+        270 - winnerCenter;
+
+    const current =
+        rotation % 360;
+
+    let difference =
+        target - current;
+
+    if (difference < 0) {
+        difference += 360;
+    }
+
+    const extraSpins =
+        (6 + Math.floor(Math.random() * 5)) * 360;
+
+    rotation += extraSpins + difference;
+
+    wheel.style.transform =
+        `rotate(${rotation}deg)`;
+
+    setTimeout(() => {
+        spinning = false;
+
+        const winner = items[winnerIndex];
+statusDisplay.textContent =
+            `Выпало: ${winner} 🎉 `;
+
+        winnerText.textContent = winner;
+        winnerModal.style.display = "flex";
+
+    }, 4500);
+});
+
+closeModalBtn.addEventListener("click", () => {
+    winnerModal.style.display = "none";
+});
+
+winnerModal.addEventListener("click", (event) => {
+    if (event.target === winnerModal) {
+        winnerModal.style.display = "none";
+    }
+});
+</script>
+
 </body>
 </html>
