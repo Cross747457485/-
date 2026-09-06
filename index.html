@@ -3,58 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой первый сайт</title>
+    <title>🔮 Рулетка Судьбы</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            margin: 0;
-            padding: 0;
+            background: #0f0c1b;
+            background: linear-gradient(to bottom, #0f0c1b, #241442);
+            color: #fff;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        .container {
-            text-align: center;
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 500px;
-            width: 100%;
-        }
+
         h1 {
-            color: #2c3e50;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
+            color: #ff007f;
+            text-shadow: 0 0 15px rgba(255, 0, 127, 0.6);
+            font-size: 2.5rem;
+            text-align: center;
         }
-        p {
-            font-size: 1.1em;
-            line-height: 1.6;
-            color: #555;
+
+        .subtitle {
+            margin-bottom: 25px;
+            color: #b388ff;
+            text-align: center;
+            font-size: 1.1rem;
         }
-        .btn {
-            display: inline-block;
-            margin-top: 25px;
-            padding: 12px 24px;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
+
+        /* Блок ввода */
+        .input-block {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .input-block label {
+            margin-bottom: 8px;
+            color: #e0aaff;
+            font-size: 1rem;
+        }
+
+        .user-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #7b2cbf;
             border-radius: 25px;
-            font-weight: bold;
-            transition: background 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            text-align: center;
+            transition: all 0.3s;
+            box-sizing: border-box;
         }
-        .btn:hover {
-            background-color: #2980b9;
+
+        .user-input:focus {
+            border-color: #ff007f;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Контейнер рулетки */
+        .roulette-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin-bottom: 35px;
+        }
+
+        /* Стрелочка */
+        .pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 28px solid #ff007f;
+            z-index: 10;
+            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.7));
+        }
+
+        /* Колесо */
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #ff0055 0deg 45deg, 
+                #00bbf9 45deg 90deg, 
+                #00f5d4 90deg 135deg, 
+                #9b5de5 135deg 180deg, 
+                #f15bb5 180deg 225deg,
+                #fee440 225deg 270deg,
+                #3a86c8 270deg 315deg,
+                #ff9f1c 315deg 360deg
+            );
+            border: 6px solid #fff;
+            box-shadow: 0 0 25px rgba(123, 44, 191, 0.5), inset 0 0 20px rgba(0,0,0,0.6);
+            transition: transform 4.5s cubic-bezier(0.1, 0.8, 0.1, 1);
+        }
+
+        /* Кнопка Старт */
+        .spin-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 75px;
+            height: 75px;
+            background: #fff;
+            color: #0f0c1b;
+            border-radius: 50%;
+            border: 4px solid #7b2cbf;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            z-index: 5;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        .spin-btn:hover {
+            background-color: #f0e6ff;
+        }
+
+        .spin-btn:disabled {
+            background-color: #444;
+            color: #888;
+            border-color: #222;
+            cursor: not-allowed;
+        }
+
+        /* Окно Судьбы */
+        .result-box {
+            font-size: 20px;
+            font-weight: 500;
+            min-height: 50px;
+            color: #fff;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.07);
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.15);
+            max-width: 450px;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .highlight {
+            color: #fee440;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(254, 228, 64, 0.4);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>сосиска гей</h1>
-        <p>он жирдяй скуфердяй.</p>
-        <a href="#" class="btn">Узнать больше</a>
+
+    <h1>🔮 РУЛЕТКА СУДЬБЫ</h1>
+    <p class="subtitle">Узнай, что предначертано тебе или твоему вопросу</p>
+
+    <!-- Поле ввода для пользователя -->
+    <div class="input-block">
+        <label for="username">Введи имя или то то тебя волнует:</label>
+        <input type="text" id="username" class="user-input" placeholder="Например: Влад или Пойти ли гулять?..." autocomplete="off">
     </div>
+
+    <!-- Рулетка -->
+    <div class="roulette-container">
+        <div class="pointer"></div>
+        <div class="wheel" id="wheel"></div>
+        <button class="spin-btn" id="spinBtn">УЗНАТЬ</button>
+    </div>
+
+    <!-- Результат -->
+    <div class="result-box" id="result">Судьба ждет твоего слова... Напиши что-нибудь выше и нажми «УЗНАТЬ»!</div>
+
+    <script>
+        const wheel = document.getElementById('wheel');
+        const spinBtn = document.getElementById('spinBtn');
+        const result = document.getElementById('result');
+        const userInput = document.getElementById('username');
+
+        // Варианты предсказаний судьбы (всего 8 секторов, по 45 градусов каждый)
+        // Колесо разделено на 8 цветных частей
+        const predictions = [
+            "ждёт невероятный успех в ближайшие 24 часа! 🚀",
+            "получит неожиданный, но очень приятный сюрприз. 🎁",
+            "столкнется с важным выбором. Доверься интуиции! 🧠",
+            "— сегодня точно твой день, всё задуманное сбудется! ✨",
+            "лучше взять паузу и хорошенько отдохнуть. 🛋️",
+            "ждёт крутое приключение или новые знакомства! 🌍",
+            "совет: не бойся рисковать, удача на твоей стороне! 🎲",
+            "впереди большая удача, о которой ты даже не думаешь! 🌟"
+        ];
+
+        let currentRotation = 0;
+        let isSpinning = false;
+
+        spinBtn.addEventListener('click', () => {
+            // Берем то, что ввел человек, и убираем лишние пробелы
+            const textValue = userInput.value.trim();
+
+            // Если человек ничего не написал, рулетка ругается и не крутится
+            if (textValue === "") {
+                result.innerHTML = "<span style='color: #ff4b5c;'>⚠️ Сначала напиши слово или имя в поле ввода!</span>";
+                userInput.focus();
+                return;
+            }
+
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            spinBtn.disabled = true; // Отключаем кнопку на время вращения
+            result.innerText = "Судьба делает свой выбор... 🌀";
+
+            // Случайный угол поворота
+            const randomDegrees = Math.floor(Math.random() * 360);
+            // Делаем от 6 до 10 полных оборотов для эпичности
+            const totalSpins = (6 + Math.floor(Math.random() * 5)) * 360;
+            
+            currentRotation += totalSpins + randomDegrees;
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+            // Ждем 4.5 секунды окончания анимации
+            setTimeout(() => {
+                isSpinning = false;
+                spinBtn.disabled = false;
+
+                // Высчитываем сектор, который остановился ровно под стрелкой (0 градусов)
+                const actualDegrees = currentRotation % 360;
+                
+                // Колесо разделено на 8 секторов (360 / 8 = 45 градусов на сектор)
+                const sectorAngle = 45;
+                const prizeIndex = Math.floor(((360 - actualDegrees) % 360) / sectorAngle);
+                
+                // Красиво выводим результат, подставляя введенный текст
+                result.innerHTML = `🔮 <span class="highlight">«${textValue}»</span> — ${predictions[prizeIndex]}`;
+            }, 4500);
+        });
+    </script>
+
 </body>
 </html>
